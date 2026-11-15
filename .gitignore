@@ -1,0 +1,15 @@
+# Match data is gated and not redistributable: never commit it
+data/
+*.mp4
+*_atd.txt
+*_atd.xml
+*_homography.csv
+*_smart_tagging.xml
+# External training data (downloaded by fetch_data.sh / export_idsse.py)
+ext/
+idsse/
+*.npz
+# Outputs and caches
+PachoAnalytics.csv
+__pycache__/
+.venv/
