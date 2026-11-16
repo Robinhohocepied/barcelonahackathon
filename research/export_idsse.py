@@ -1,8 +1,8 @@
 """Run this on YOUR Mac (needs internet; figshare/HuggingFace are not reachable from my workspace).
 
     pip install kloppy numpy
-    python export_idsse.py --limit 3000        # 2-minute smoke test on one match, prints what it sees
-    python export_idsse.py                     # all 7 matches -> idsse/idsse_<id>.npz (~100 MB each)
+    python research/export_idsse.py --limit 3000        # 2-minute smoke test on one match, prints what it sees
+    python research/export_idsse.py                     # all 7 matches -> idsse/idsse_<id>.npz (~100 MB each)
 
 Labels follow the challenge's own recipe (CHALLENGE.md): D where the tracking says the ball is dead,
 otherwise the team the tracking names as owning the ball. IDSSE is CC-BY 4.0 (DFL / Sportec Solutions,

@@ -1,7 +1,7 @@
 """v4 decoder selection without peeking: for held-out game g, the decoder settings are chosen on the OTHER games'
 held-out TCN outputs (each predicted by a model that never saw it), then applied to g."""
 import itertools, os, sys, numpy as np
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
 import core
 from metrics import spell_f1, macro_f1
 H = {}

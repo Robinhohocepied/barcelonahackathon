@@ -1,5 +1,5 @@
 """Backs the claim 'about 3 in 4 longer possessions found': v4.1 on held-out Metrica games (leave-one-game-out),
-share of true possessions matched at IoU >= 0.5, by length. Needs the ext/p5_* files (ext_prep5.py) and ext/tcn_<g>.npz (train_v4.py)."""
+share of true possessions matched at IoU >= 0.5, by length. Needs the ext/p5_* files (research/ext_prep5.py) and ext/tcn_<g>.npz (research/train_v4.py)."""
 import sys, numpy as np
 sys.argv = ["x", "x", "tcn_{g}.npz", "v5"]
 import ext_v5eval as E, stack5

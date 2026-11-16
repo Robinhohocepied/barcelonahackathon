@@ -1,7 +1,7 @@
 """Download IDSSE (CC-BY 4.0, DFL / Sportec, mirror: huggingface.co/datasets/pysport/idsse-data) one match at a time,
 convert with kloppy from LOCAL files, write idsse/idsse_<id>.npz, delete the big XML. Run on your Mac:
-    python export_idsse_local.py            (all 7; ~400 MB temporary disk per match)
-    python export_idsse_local.py J03WPY     (one match)"""
+    python research/export_idsse_local.py            (all 7; ~400 MB temporary disk per match)
+    python research/export_idsse_local.py J03WPY     (one match)"""
 import os, subprocess, sys
 import numpy as np
 from kloppy import sportec

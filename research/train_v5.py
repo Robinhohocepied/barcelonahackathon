@@ -1,6 +1,6 @@
-"""v5 TCN. python train_v5.py <held-out metrica game|all> <epochs> <variants e.g. native,aug> <sk: 6|20>"""
+"""v5 TCN. python research/train_v5.py <held-out metrica game|all> <epochs> <variants e.g. native,aug> <sk: 6|20>"""
 import glob, os, sys, time, pickle, numpy as np, torch
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline"))
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline"))
 import tcn
 torch.manual_seed(0); np.random.seed(0); torch.set_num_threads(2)
 SK6 = {"1886347", "1996435", "2017461", "2016236", "2006229", "1874553"}

@@ -5,7 +5,7 @@
 import glob, os, pickle, sys, argparse
 import numpy as np
 from sklearn.ensemble import HistGradientBoostingClassifier as HGB
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.dirname(HERE))
+HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(os.path.dirname(HERE), 'research'))
 import core
 mk = lambda: HGB(max_iter=250, learning_rate=0.06, max_leaf_nodes=24, l2_regularization=1.0, random_state=0)
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     if cmd == "prep":
         prep(sys.argv[2], sys.argv[3])
     elif cmd == "cv":
-        sys.path.insert(0, os.path.dirname(HERE)); from metrics import spell_f1, macro_f1
+        sys.path.insert(0, os.path.join(os.path.dirname(HERE), 'research')); from metrics import spell_f1, macro_f1
         F = load_feats(); rows = []
         for m in F:
             tr = [h for k, v in F.items() if k != m for h in v]; team, dead = fit(tr)

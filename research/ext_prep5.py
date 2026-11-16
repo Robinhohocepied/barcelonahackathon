@@ -1,7 +1,7 @@
 """v5 prep. variant: native (as before) | aug (extra random ball loss, independent of game state; for training)
 | stress (heavier random ball loss; for robustness testing only). -> ext/p5_<variant>_<src>_<g>.pkl"""
 import os, sys, pickle, numpy as np
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
 import core, stack, frames
 from degrade import degrade, to_static, _ball_markov
 M = pickle.load(open(os.path.join(HERE, "pipeline", "model.pkl"), "rb"))

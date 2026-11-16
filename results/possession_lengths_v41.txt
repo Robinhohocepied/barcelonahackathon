@@ -1,4 +1,4 @@
-v4.1, held-out Metrica games, true possessions matched at IoU >= 0.5 (python ext_v41_lengths.py)
+v4.1, held-out Metrica games, true possessions matched at IoU >= 0.5 (python research/ext_v41_lengths.py)
 0-1s: 9% of possessions, found 0%
 1-3s: 22% of possessions, found 18%
 3-8s: 27% of possessions, found 52%

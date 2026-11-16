@@ -1,7 +1,7 @@
 """Fit the v2 second stage + decoder on ALL 3 Metrica open games (external), save pipeline/model_v2.pkl.
-Needs: ./fetch_metrica.sh, then python ext_eval.py prep. Deterministic."""
+Needs: research/fetch_metrica.sh, then python research/ext_eval.py prep. Deterministic."""
 import itertools, os, pickle, sys, numpy as np
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
 import core, stack
 from metrics import spell_f1
 R = pickle.load(open(os.path.join(HERE, "ext", "feats_metrica.pkl"), "rb"))

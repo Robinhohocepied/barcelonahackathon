@@ -1,6 +1,6 @@
 """v4 prep: per-frame inputs + labels for Metrica open games and SkillCorner games -> ext/f4_<src>_<g>.npz"""
 import os, sys, pickle, numpy as np
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
 import core, frames
 from degrade import degrade, to_static
 M = pickle.load(open(os.path.join(HERE, "pipeline", "model.pkl"), "rb"))

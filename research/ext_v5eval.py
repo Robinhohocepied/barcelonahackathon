@@ -1,8 +1,8 @@
 """Robust selection. For each held-out Metrica game: predictions on its native AND stressed (extra ball loss) versions.
 Ensemble weight + decoder chosen on the OTHER games, maximising the mean of native and stressed spellF1.
-python ext_v5eval.py <name> <tcn tag pattern with {g}, or 'none'> <stack: v2|v5|none>"""
+python research/ext_v5eval.py <name> <tcn tag pattern with {g}, or 'none'> <stack: v2|v5|none>"""
 import itertools, os, sys, pickle, numpy as np, multiprocessing as mp
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
 import core, stack, stack5, tcn
 from metrics import spell_f1, macro_f1
 def s1(P, T): s = spell_f1(P, T); return s[0] if isinstance(s, tuple) else s

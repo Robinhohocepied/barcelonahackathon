@@ -1,5 +1,5 @@
 import os, sys, pickle, numpy as np
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
 import core
 from metrics import spell_f1, macro_f1
 R = pickle.load(open(os.path.join(HERE, "ext", "feats_metrica.pkl"), "rb"))

@@ -1,6 +1,6 @@
-"""Train the v4 TCN on external games. python train_v4.py <held-out metrica game or 'all'> [epochs]"""
+"""Train the v4 TCN on external games. python research/train_v4.py <held-out metrica game or 'all'> [epochs]"""
 import glob, os, sys, time, numpy as np, torch
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline"))
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline"))
 import tcn
 torch.manual_seed(0); np.random.seed(0); torch.set_num_threads(2)
 

@@ -1,6 +1,6 @@
 """v3 prep: Metrica open games + SkillCorner games -> ext/feats3_<name>.pkl (base-model probs, evidence, control features)"""
 import os, sys, pickle, numpy as np
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
 import core, stack, control
 from degrade import degrade, to_static
 M = pickle.load(open(os.path.join(HERE, "pipeline", "model.pkl"), "rb"))

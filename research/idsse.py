@@ -1,4 +1,4 @@
-"""Loader for the npz files written by export_idsse.py -> the same half dicts the harness uses (25 fps)."""
+"""Loader for the npz files written by research/export_idsse.py -> the same half dicts the harness uses (25 fps)."""
 import numpy as np
 
 

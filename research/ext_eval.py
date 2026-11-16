@@ -1,8 +1,8 @@
 """External validation on Metrica open games (never the provided match).
-    python ext_eval.py prep        -> ext/feats_metrica.pkl (degraded like the ATD, features, model probabilities)"""
+    python research/ext_eval.py prep        -> ext/feats_metrica.pkl (degraded like the ATD, features, model probabilities)"""
 import os, sys, pickle
 import numpy as np
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
 import core
 from degrade import degrade, to_static
 import metrica_open

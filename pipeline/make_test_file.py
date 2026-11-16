@@ -3,7 +3,7 @@ metadata XML, NaN gaps, ball visible ~59%), with dead time before / between / af
     python make_test_file.py --npz ../idsse/idsse_J03WR9.npz --out testdata"""
 import argparse, os, sys
 import numpy as np
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.dirname(HERE))
+HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(os.path.dirname(HERE), 'research'))
 from degrade import degrade
 import idsse
 ap = argparse.ArgumentParser(); ap.add_argument("--npz", required=True); ap.add_argument("--out", required=True); ap.add_argument("--seed", type=int, default=7); a = ap.parse_args()

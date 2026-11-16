@@ -1,6 +1,6 @@
-"""v3 leave-one-Metrica-game-out. python ext_v3eval.py <held-out game 1|2|3>"""
+"""v3 leave-one-Metrica-game-out. python research/ext_v3eval.py <held-out game 1|2|3>"""
 import glob, itertools, os, pickle, sys, numpy as np, multiprocessing as mp
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
 import core, v3
 from metrics import spell_f1, macro_f1
 ROWS = [r for f in sorted(glob.glob(os.path.join(HERE, "ext", "feats3_*.pkl"))) for r in pickle.load(open(f, "rb"))]

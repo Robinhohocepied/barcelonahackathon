@@ -1,6 +1,6 @@
 """v4 ensemble: TCN (v4) + v2 (stack) probabilities, weight and decoder chosen on the OTHER held-out games."""
 import itertools, os, sys, pickle, numpy as np, multiprocessing as mp
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
 import core, stack
 from metrics import spell_f1, macro_f1
 from ext_v4eval import H, s1, npos

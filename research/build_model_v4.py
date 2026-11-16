@@ -1,4 +1,4 @@
-"""Assemble pipeline/model_v4.pkl from model_v2.pkl, ext/tcn_all.npz (python train_v4.py all 25) and ext/final_cfg.txt (ext_v4ens.py on all held-out games)."""
+"""Assemble pipeline/model_v4.pkl from model_v2.pkl, ext/tcn_all.npz (python research/train_v4.py all 25) and ext/final_cfg.txt (research/ext_v4ens.py on all held-out games)."""
 import ast, pickle, numpy as np
 v2 = pickle.load(open("pipeline/model_v2.pkl", "rb")); z = np.load("ext/tcn_all.npz")
 m = dict(team=v2["team"], dead=v2["dead"], stack=v2["stack"], tcn={k: z[k] for k in z.files}, decode=ast.literal_eval(open("ext/final_cfg.txt").read()),

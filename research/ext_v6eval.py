@@ -1,9 +1,9 @@
 """Two-source robustness validation. Folds: Metrica game 1, 2, 3 and IDSSE groups. Each fold is predicted by models that never
 saw it (sequence model and second stage), in two conditions: native ball and extra ball loss. Ensemble weight + decoder chosen
 on the OTHER folds (mean over sources and conditions). The worst fold-condition decides.
-python ext_v6eval.py <name> <tcn: v4|v6> <stack: s5|s6>"""
+python research/ext_v6eval.py <name> <tcn: v4|v6> <stack: s5|s6>"""
 import itertools, os, sys, pickle, numpy as np, multiprocessing as mp
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline")); sys.path.insert(0, HERE)
 import core, stack, stack5, stack6, tcn
 from metrics import spell_f1, macro_f1
 from ext_v5eval import s1, npos, p5, GRID, dec

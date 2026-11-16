@@ -1,7 +1,7 @@
-"""v5 sequence model. python train_v6.py <holdout spec> <epochs> ; holdout spec like 'metrica:1' or 'idsse:J03WPY+J03WMX' or 'all'.
+"""v5 sequence model. python research/train_v6.py <holdout spec> <epochs> ; holdout spec like 'metrica:1' or 'idsse:J03WPY+J03WMX' or 'all'.
 Trains on native copies of: Metrica open (3), SkillCorner (6, possession only), IDSSE (all exported; real dead-ball flag)."""
 import glob, os, sys, time, pickle, numpy as np, torch
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "pipeline"))
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(HERE, "pipeline"))
 import tcn
 from train_v5 import chunks, SK6
 torch.manual_seed(0); np.random.seed(0); torch.set_num_threads(2)

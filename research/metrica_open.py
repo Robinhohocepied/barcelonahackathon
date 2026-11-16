@@ -7,7 +7,7 @@ Labels from the events, following CHALLENGE.md:
   - ball dead (D): from a stoppage (BALL OUT, FAULT RECEIVED, CARD, a SHOT that is a goal) until the next SET PIECE
     starts (or, if none is logged, the next controlling event).
   - frames before the first / after the last event of a half are not graded (label 3 = X).
-Fetch: ./fetch_metrica.sh  (files are NOT committed: no redistribution)."""
+Fetch: research/fetch_metrica.sh  (files are NOT committed: no redistribution)."""
 import json, os
 import xml.etree.ElementTree as ET
 import numpy as np
@@ -115,5 +115,5 @@ def _epts_game(root):
 
 
 def load(game, root=None):
-    root = root or os.environ.get("MTAH_METRICA", os.path.join(os.path.dirname(os.path.abspath(__file__)), "ext", "metrica"))
+    root = root or os.environ.get("MTAH_METRICA", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ext", "metrica"))
     return _epts_game(root) if int(game) == 3 else _csv_game(root, int(game))

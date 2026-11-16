@@ -101,7 +101,7 @@ The labels follow the sources, which match CHALLENGE.md:
 | v4, same robustness test (for comparison) | 0.574 / 0.467 / 0.418 | |
 | v4.1, public 5 minutes, pipeline check (decision made on external games; one possession ≈ 0.06 here) | 0.529 | 0.691 |
 
-**Cross-provider check (added late, IDSSE re-exported).** We added the 7 IDSSE matches as a second validation source. v4.1, whose sequence model never saw IDSSE, scores 0.37 / 0.37 there (normal / extra ball loss; the v1 base models did see these matches, so this is if anything optimistic). A v5 with the sequence model also trained on IDSSE scored better in that validation (worst case 0.419 vs 0.337) but failed the label-free checks on the real match: 61% dead ball and 41% of ball-visible frames called dead. It learned the Bundesliga provider's notion of a stoppage, which does not transfer. v5 was not shipped (`build_model_v5.py`, `results/validation_two_source.log`).
+**Cross-provider check (added late, IDSSE re-exported).** We added the 7 IDSSE matches as a second validation source. v4.1, whose sequence model never saw IDSSE, scores 0.37 / 0.37 there (normal / extra ball loss; the v1 base models did see these matches, so this is if anything optimistic). A v5 with the sequence model also trained on IDSSE scored better in that validation (worst case 0.419 vs 0.337) but failed the label-free checks on the real match: 61% dead ball and 41% of ball-visible frames called dead. It learned the Bundesliga provider's notion of a stoppage, which does not transfer. v5 was not shipped (`research/build_model_v5.py`, `results/validation_two_source.log`).
 
 Tried for v4.1 and rejected on the same test: a sequence model trained with extra ball loss (worst case 0.417), and a sequence model trained on 20 SkillCorner matches instead of 6 (worst 0.440): SkillCorner has no real dead-ball labels, so more of it dilutes what the model learns about stoppages.
 
@@ -135,4 +135,4 @@ pip install -r requirements.txt     # numpy 2.2.6, scikit-learn 1.7.2, pandas 2.
 
 `reproduce.sh` runs `pipeline/predict.py` with the committed model (`model_v41.pkl`) and checks the result against the SHA-256 of the submitted `PachoAnalytics.csv`. It prints `IDENTICAL` on success. This was verified from a fresh download of the public repository. Runtime is a few seconds.
 
-Refitting v4 (optional, needs torch): see `results/validation_v4.md`. Refitting v2: `./fetch_metrica.sh && python ext_eval.py prep && python train_v2.py`. Validation: `python ext_v2.py`, `python ext_v3.py` (logs in `results/`). Base models: `pipeline/README.md`.
+Refitting v4 (optional, needs torch): see `results/validation_v4.md`. Refitting v2: `research/fetch_metrica.sh && python research/ext_eval.py prep && python research/train_v2.py`. Validation: `python research/ext_v2.py`, `python research/ext_v3.py` (logs in `results/`). Base models: `pipeline/README.md`.

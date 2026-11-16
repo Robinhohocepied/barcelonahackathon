@@ -15,5 +15,5 @@ Needs numpy, pandas (scorer only) and scikit-learn. About 1 minute for a full ma
 
 Not used: Smart Tagging, homography, video, the broadcast feed. Nothing here was trained, fitted or tuned on the provided match or the public ground truth.
 
-**Retrain:** `python pipeline/train.py prep idsse idsse/idsse_<id>.npz` (per match, see export_idsse.py / fetch_data.sh), then `python pipeline/train.py cv` and `python pipeline/train.py fit --out pipeline/model.pkl`.
+**Retrain:** `python pipeline/train.py prep idsse idsse/idsse_<id>.npz` (per match, see research/export_idsse.py / research/fetch_data.sh), then `python pipeline/train.py cv` and `python pipeline/train.py fit --out pipeline/model.pkl`.
 **Format test on external data:** `python pipeline/make_test_file.py --npz idsse/idsse_J03WR9.npz --out pipeline/testdata`, then predict with `--model pipeline/model_holdout_J03WR9.pkl --halves <printed ranges>`.

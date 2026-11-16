@@ -7,7 +7,7 @@
 | 3 | 0.559 | 0.600 | 0.607 |
 | mean spellF1 | 0.528 | 0.561 | **0.574** |
 
-Reproduce: `./fetch_metrica.sh && bash fetch_skillcorner.sh`, then `python ext_prep4.py <src> <game>` for every game,
-`python train_v4.py <1|2|3> 25`, `python ext_v4eval.py`, `python ext_prep3.py metrica <g>`, `python ext_v4ens.py`.
-Final model: `python train_v4.py all 25` (needs torch; inference does not).
-Note: v3 (pipeline/v3.py, ext_v3eval.py) was evaluated and not shipped (+0.016 spellF1).
+Reproduce: `research/fetch_metrica.sh && bash research/fetch_skillcorner.sh`, then `python research/ext_prep4.py <src> <game>` for every game,
+`python research/train_v4.py <1|2|3> 25`, `python research/ext_v4eval.py`, `python research/ext_prep3.py metrica <g>`, `python research/ext_v4ens.py`.
+Final model: `python research/train_v4.py all 25` (needs torch; inference does not).
+Note: v3 (pipeline/v3.py, research/ext_v3eval.py) was evaluated and not shipped (+0.016 spellF1).
