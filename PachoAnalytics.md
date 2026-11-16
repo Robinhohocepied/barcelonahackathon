@@ -10,7 +10,7 @@ A learned model, trained only on other matches, that reads the tactical tracking
 2. **Two gradient-boosted classifiers** (scikit-learn `HistGradientBoostingClassifier`):
    - **Who has the ball** (H vs A): uses all features.
    - **Is the ball dead** (D): uses **no ball features**. A version that also used the ball did better on one data source but did not transfer to the other, so we dropped it.
-3. **v2 second stage (`pipeline/stack.py`)**: two small logistic models recalibrate those probabilities using **ball-in-play evidence**: how often, in the last ±1 s and ±3 s, the ball is visible, inside the pitch and moving faster than 8 m/s. The evidence is positive-only: a fast ball on the pitch says "alive", a missing ball adds nothing. This fixes v1's main failure: it read "ball not seen + players walking" as a stoppage, so slow build-up play became dead ball.
+3. **v2 second stage (`pipeline/stack.py`)**: two small logistic models recalibrate those probabilities with ball features: how often, in the last ±1 s and ±3 s, the ball is visible, inside the pitch and moving faster than 8 m/s. **Correction (after an external review):** we first described this as positive-only evidence. It is not. The ball-visibility features carry large weights, and in the training games a missing ball strongly signals dead ball, so in practice v2 marks dead ball where the ball is not tracked (see Limitations).
 4. **v4 sequence model (`pipeline/tcn.py`)**: a small temporal convolutional network (6 dilated layers, ~5 s receptive field) reads every frame at 25 fps: ball position, speed and visibility, nearest home/away player to the ball, who controls the ball (ball visible, slow, a player within 1.5 m), team shapes and speeds, plus the v1 probabilities. It follows Borghesi et al. (ESWA 2023). Steps 1–3 look at the game 5 times a second averaged over ±2 s, which blurs short possessions; the TCN does not. Trained with torch on external games only; inference is plain numpy, so the submission rebuilds exactly without torch.
 5. **Ensemble + 3-state Viterbi decoding**: the v2 and v4 probabilities are averaged (50/50), then decoded into clean spells: minimum spell 2.4 s for H/A and 1 s for D, no extra cost for H/A switches and cost 1 into or out of D. Weight and decoder settings were chosen on held-out external games.
 
@@ -40,7 +40,7 @@ None of it comes from the provided game.
 | Metrica Sports open sample data (github.com/metrica-sports/sample-data) | Public sample data, used with credit, not redistributed | Metrica: human-annotated events (passes, ball out, set pieces...) | 3 full anonymised matches: v2 second stage, v4 training, decoder settings, and the validation set |
 | SkillCorner open data, 4 more matches | MIT | as above | used for v4 training (possession only; their dead-ball label is a prior, so it is not learned from) |
 
-**Degradation simulator.** The external tracking is cleaner than ours, so before training we make it look like the challenge's ATD: position noise, player track gaps, a missing ball (about 59% visible, the figure in DATA.md), and identity swaps between nearby opponents in the same fixed-slot form the ATD uses. All settings come from published figures in DATA.md, not from the provided match.
+**Degradation simulator.** The external tracking is cleaner than ours, so before training we add position noise, player track gaps and identity swaps in the ATD's fixed-slot form (settings from published figures in DATA.md, not from the provided match). **Correction:** a simulated missing ball is added to IDSSE only. Metrica and SkillCorner keep their own ball gaps (58–72% visible), which mostly fall in stoppages.
 
 ## 4. Possession rules implemented
 
@@ -49,7 +49,7 @@ The labels follow the sources, which match CHALLENGE.md:
 - **Loose balls and passes in flight** stay with the last team in possession until the other team takes the ball.
 - **Dead ball (D)**: IDSSE uses the provider's own dead-ball flag. Metrica sample games: D from a stoppage event (ball out, foul, card, goal) until the next set piece starts. SkillCorner has no such flag, so any gap of more than 8 s between possessions counts as a stoppage, labelled D from 2 s after the last possession until play restarts.
 - **Restarts** (throw-ins, free kicks, goal kicks, corners) are D until the ball is played, then belong to the team taking them.
-- **Challenges**: no special rule. Possession switches when the model is confident the other team has the ball, and the decoder ignores flips shorter than 1 s.
+- **Challenges**: no special rule. Possession switches when the model is confident the other team has the ball, and the decoder ignores possessions shorter than 2.4 s.
 
 ## 5. Results and limitations
 
@@ -68,6 +68,10 @@ The labels follow the sources, which match CHALLENGE.md:
 
 - **Still too few possessions.** v4 finds 254 on the full match (v2: 242, v1: 184); external matches have ~340. Possessions under 3 s are still mostly missed.
 - **Dead ball:** v2 brings D from 61% to 40% of graded time on the full match, but on external games it still slightly over-predicts D (37% vs 31%).
+- **Dead ball means "ball not tracked" (found in an external review).** On the full match, 96% of the frames we label D have no ball and only 3% of ball-visible frames are labelled D. The match's ball gaps are long (median 11 s, all missing time in gaps over 5 s) and players are slow during them, so they mostly are stoppages. But a diagnostic on the public 5 minutes (no tuning) shows that two-thirds of true dead-ball time there has the ball visible (restarts being set up), and v2/v4 call most of it live. That explains the lower macroF1 of v2/v4 on that window.
+- **How big the gain really is.** A paired block bootstrap over the 3 Metrica games gives +0.035 spellF1 for v4 over v2 (95% interval +0.017 to +0.054), below our own +0.04 gate. The decoder settings for each held-out game were chosen on the other games' held-out outputs, but those came from models that had seen the held-out game, which is a mild leak.
+- **Label rule on the Metrica sample games:** off-target shots, offsides and handballs are not treated as stoppages, so some dead time is labelled live.
+- **Robustness:** with extra random ball loss added to the held-out games, v4 drops from 0.574 to 0.478 (v2: 0.528 to 0.323).
 - **Decoder settings sit at the edge of the tried range** and differ between folds, so they are not fully pinned down.
 - **Little training variety:** 9 matches for the base models, 3 for the second stage, 9 for the sequence model. A larger sequence model needs more labelled games.
 - **With more time:** tune the decoder's switch costs on external data, add more external matches, and try Smart Tagging and the video as extra inputs.

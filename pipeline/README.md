@@ -1,5 +1,7 @@
 # Possession pipeline (More Than A Hack 2027, Phase 1)
 
+> This file describes the v1 base models. The submitted version (v4) adds the v2 second stage and the v4 sequence model on top: see the top-level README and PachoAnalytics.md. The decoder settings below are v1's, not the submitted ones.
+
     python pipeline/predict.py --atd-raw data/tactical/BAR-ATH_tactical_atd.txt \
                                --atd-meta data/tactical/BAR-ATH_tactical_atd.xml --out submission.csv
 
