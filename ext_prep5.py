@@ -10,16 +10,22 @@ if __name__ == "__main__":
     variant, src, g = sys.argv[1:4]
     if src == "metrica":
         import metrica_open; halves = metrica_open.load(int(g), os.path.join(HERE, "ext", "metrica")); seed = 1000 + int(g)
+    elif src == "idsse":
+        import idsse; seed = sum(map(ord, g))
+        halves = []
+        for h in idsse.load(os.path.join(HERE, "idsse", "idsse_%s.npz" % g)):      # crop to first..last live frame of the half
+            live = np.where(h["label"] != 2)[0]; a, b = live[0], live[-1] + 1
+            halves.append(dict(pos=h["pos"][a:b], ball=h["ball"][a:b], team=h["team"], label=h["label"][a:b]))
     else:
         import skillcorner; halves = skillcorner.load(int(g), os.path.join(HERE, "ext", "sk")); seed = int(g) % 9973
     rng = np.random.default_rng(seed); rng2 = np.random.default_rng(seed + {"native": 0, "aug": 77, "stress": 99}[variant])
     out = []
     for k, h in enumerate(halves):
-        d = degrade(h, rng, ball_mode="native"); d["pos"] = to_static(d, h["team"]); st = np.broadcast_to(h["team"], d["slot_team"].shape)
+        d = degrade(h, rng, ball_mode="markov" if src == "idsse" else "native"); d["pos"] = to_static(d, h["team"]); st = np.broadcast_to(h["team"], d["slot_team"].shape)
         if EXTRA[variant]: d["ball"][~_ball_markov(len(d["ball"]), rng2, EXTRA[variant], 60)] = np.nan
         X, idx = core.features(d["pos"], d["ball"], st)
         ph = M["team"].predict_proba(X[:, core.TEAM_COLS])[:, 1]; pd = M["dead"].predict_proba(X[:, core.DEAD_COLS])[:, 1]
-        out.append(dict(src=src, game=g, half=k + 1, variant=variant, X=X.astype(np.float32), ph=ph, pd=pd, E=stack.evidence(d["ball"][idx]),
+        out.append(dict(src=src, game=g, half=k + 1, variant=variant, X=X.astype(np.float32), ph=ph, pd=pd, E=stack.evidence(d["ball"][idx]), B5=d["ball"][idx].astype(np.float32),
                         F=frames.frame_inputs(d["pos"], d["ball"], st, ph, pd), label=h["label"].astype(np.int8), n=len(h["label"]),
                         vis=float(np.isfinite(d["ball"][:, 0]).mean())))
     pickle.dump(out, open(os.path.join(HERE, "ext", "p5_%s_%s_%s.pkl" % (variant, src, g)), "wb"))

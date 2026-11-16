@@ -1,0 +1,4 @@
+v4.1_submitted | metrica native 0.523 stress 0.469 | idsse native 0.367 stress 0.365 | WORST 0.337
+v5_newTCN+deadvis | metrica native 0.510 stress 0.478 | idsse native 0.461 stress 0.441 | WORST 0.416
+newTCN+posonly | metrica native 0.522 stress 0.483 | idsse native 0.461 stress 0.442 | WORST 0.419
+v5 | metrica native 0.522 stress 0.483 | idsse native 0.461 stress 0.442 | WORST 0.419

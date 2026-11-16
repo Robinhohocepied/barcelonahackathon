@@ -2,6 +2,33 @@
 
 More Than A Hack 2027, Initial Challenge (team possession). Code: https://github.com/Robinhohocepied/barcelonahackathon
 
+## In plain words (for non-technical readers)
+
+**In one sentence:** our system watches only the moving dots of a tracking feed (22 players and the ball) and says, second by second, which team has the ball or whether play is stopped. No video, and nobody tagging anything.
+
+**Why it matters:** possession is the starting point for almost every football analysis: build-up, pressing, transitions, ball-in-play time. Today it is mostly tagged by hand, which is slow and expensive and not available for every match. Done automatically from tracking, every tracked match gets a possession timeline for free.
+
+**How well it works:** on matches it never saw, it gets the longer possessions right most of the time (about 3 in 4), but it still misses most very quick possessions (1–2 seconds after a tackle or a loose ball). Its score on the ranking metric is about 0.57 on Metrica-style tracking (Metrica's simple baseline scores 0.24 on the challenge match, so a rough comparison). On tracking from a provider it never learned from (Bundesliga data), it drops to about 0.37: still above the baseline, but a clear sign that each new data source needs a calibration step.
+
+**Why you can trust the number:** it was never tuned on the answer key, it was tested on matches it had never seen from more than one data provider, and we deliberately damaged the data (hid the ball) and picked the version that breaks least, not the one with the highest peak. The goal is "good enough on any match", not "perfect on one".
+
+**What it gets wrong:** quick turnovers, stoppages where the ball stays in view (a throw-in being set up), and it is weaker on tracking from providers it has not seen.
+
+**What a club could do with it:** automatic possession timelines and ball-in-play time for every tracked match, as input for pressing and build-up analysis. Next step: train it on the club's own tagged matches to close the gap on quick turnovers.
+
+### What we did differently
+
+| The obvious approach | What we did |
+|---|---|
+| Hand-written rules: "whoever is nearest the ball has it", then smoothing | Learned from **other matches** with known answers, from 3 data providers, so it does not depend on one camera system |
+| Tune on the 5-minute answer key that comes with the challenge | **Never** used it to tune anything, only to check the file works |
+| Chase the highest score on the test | Chose the version that **breaks least** when the data gets worse: a slightly lower peak for reliability on any match |
+| Treat "ball not visible" as "game stopped" | A missing ball means **"we don't know"**, not "dead ball" |
+| Grade our own homework | Brought in an **outside critic** to attack the work, and published the mistakes it found and how we fixed them |
+| Ship whatever scores best in validation | Every version must also pass **sanity checks on the real match without labels** (dead-ball share, possession count, both halves alike). A version that looked better in validation (v5) failed them, so we did not ship it |
+
+---
+
 ## 1. Approach
 
 A learned model, trained only on other matches, that reads the tactical tracking and outputs H / A / D for every frame.
@@ -69,6 +96,8 @@ The labels follow the sources, which match CHALLENGE.md:
 | **v4.1 (submitted), leave-one-game-out, normal / extra ball loss / worst game** | **0.568 / 0.487 / 0.451** | |
 | v4, same robustness test (for comparison) | 0.574 / 0.467 / 0.418 | |
 | v4.1, public 5 minutes, pipeline check (decision made on external games; one possession ≈ 0.06 here) | 0.529 | 0.691 |
+
+**Cross-provider check (added late, IDSSE re-exported).** We added the 7 IDSSE matches as a second validation source. v4.1, whose sequence model never saw IDSSE, scores 0.37 / 0.37 there (normal / extra ball loss; the v1 base models did see these matches, so this is if anything optimistic). A v5 with the sequence model also trained on IDSSE scored better in that validation (worst case 0.419 vs 0.337) but failed the label-free checks on the real match: 61% dead ball and 41% of ball-visible frames called dead. It learned the Bundesliga provider's notion of a stoppage, which does not transfer. v5 was not shipped (`build_model_v5.py`, `results/validation_two_source.log`).
 
 Tried for v4.1 and rejected on the same test: a sequence model trained with extra ball loss (worst case 0.417), and a sequence model trained on 20 SkillCorner matches instead of 6 (worst 0.440): SkillCorner has no real dead-ball labels, so more of it dilutes what the model learns about stoppages.
 
