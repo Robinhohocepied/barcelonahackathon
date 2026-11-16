@@ -2,6 +2,8 @@
 
 More Than A Hack 2027, Initial Challenge (team possession). Code: https://github.com/Robinhohocepied/barcelonahackathon
 
+> **Submitted version: v4.1** (`pipeline/model_v41.pkl`, file `PachoAnalytics.csv`, sha256 `72b504d8…`). v1, v2, v4 and v5 are earlier or rejected versions, described below for transparency.
+
 ## In plain words (for non-technical readers)
 
 **In one sentence:** our system watches only the moving dots of a tracking feed (22 players and the ball) and says, second by second, which team has the ball or whether play is stopped. No video, and nobody tagging anything.
@@ -37,10 +39,12 @@ A learned model, trained only on other matches, that reads the tactical tracking
 2. **Two gradient-boosted classifiers** (scikit-learn `HistGradientBoostingClassifier`):
    - **Who has the ball** (H vs A): uses all features.
    - **Is the ball dead** (D): uses **no ball features**. A version that also used the ball did better on one data source but did not transfer to the other, so we dropped it.
-3. **v2 second stage (`pipeline/stack.py`)**: two small logistic models recalibrate those probabilities with ball features: how often, in the last ±1 s and ±3 s, the ball is visible, inside the pitch and moving faster than 8 m/s. **Correction (after an external review):** we first described this as positive-only evidence. It is not. The ball-visibility features carry large weights, and in the training games a missing ball strongly signals dead ball, so in practice v2 marks dead ball where the ball is not tracked (see Limitations).
+3. **v2 second stage (`pipeline/stack.py`), history, not in the submitted v4.1**: two small logistic models recalibrate those probabilities with ball features: how often, in the last ±1 s and ±3 s, the ball is visible, inside the pitch and moving faster than 8 m/s. **Correction (after an external review):** we first described this as positive-only evidence. It is not. The ball-visibility features carry large weights, and in the training games a missing ball strongly signals dead ball, so in practice v2 marks dead ball where the ball is not tracked (see Limitations).
 4. **v4 sequence model (`pipeline/tcn.py`)**: a small temporal convolutional network (6 dilated layers, ~5 s receptive field) reads every frame at 25 fps: ball position, speed and visibility, nearest home/away player to the ball, who controls the ball (ball visible, slow, a player within 1.5 m), team shapes and speeds, plus the v1 probabilities. It follows Borghesi et al. (ESWA 2023). Steps 1–3 look at the game 5 times a second averaged over ±2 s, which blurs short possessions; the TCN does not. Trained with torch on external games only; inference is plain numpy, so the submission rebuilds exactly without torch.
 5. **v4.1 (submitted): positive-only second stage (`pipeline/stack5.py`)**. After an external review showed that the v2 second stage had learned "ball missing = dead ball", we replaced it with a version that only sees *positive* ball evidence (ball visible, in the pitch and moving) and player speed, never ball visibility itself. A missing ball can no longer push towards dead ball.
 6. **Ensemble + 3-state Viterbi decoding**: the sequence-model and second-stage probabilities are averaged (70/30), then decoded into clean spells: minimum spell 2.4 s for H/A and 1 s for D, no extra cost for H/A switches and cost 3 into or out of D.
+
+**The submitted v4.1 pipeline = steps 1, 2, 4, 5 and 6.**
 
 **How we chose (robustness first).** The goal is a model that is good enough on *any* match, not the best score on one. Every candidate was scored leave-one-game-out on the 3 Metrica games twice: with the normal tracking, and with extra random ball loss (ball visible ~30% instead of ~60%). Settings were chosen on the mean of both, and the winner is the one with the best worst case.
 
@@ -70,7 +74,7 @@ None of it comes from the provided game.
 | Metrica Sports open sample data (github.com/metrica-sports/sample-data) | Public sample data, used with credit, not redistributed | Metrica: human-annotated events (passes, ball out, set pieces...) | 3 full anonymised matches: v2 second stage, v4 training, decoder settings, and the validation set |
 | SkillCorner open data, 4 more matches | MIT | as above | used for v4 training (possession only; their dead-ball label is a prior, so it is not learned from) |
 
-**Degradation simulator.** The external tracking is cleaner than ours, so before training we add position noise, player track gaps and identity swaps in the ATD's fixed-slot form (settings from published figures in DATA.md, not from the provided match). **Correction:** a simulated missing ball is added to IDSSE only. Metrica and SkillCorner keep their own ball gaps (58–72% visible), which mostly fall in stoppages.
+**Degradation simulator.** The external tracking is cleaner than ours, so before training we add position noise, player track gaps and identity swaps in the ATD's fixed-slot form (settings from published figures in DATA.md, not from the provided match). **Correction:** a simulated missing ball is added to IDSSE only. Metrica and SkillCorner keep their own ball gaps (58–72% visible). In the Metrica games these gaps mostly fall in stoppages (an external reviewer measured the ball visible in 87% of live frames and 9% of dead frames); we did not check SkillCorner.
 
 ## 4. Possession rules implemented
 
@@ -106,12 +110,18 @@ Tried for v4.1 and rejected on the same test: a sequence model trained with extr
 - **Still too few possessions.** v4.1 finds 279 on the full match (v4: 254, v2: 242, v1: 184); external matches have ~340. Possessions under 3 s are still mostly missed.
 - **Dead ball:** v2 brings D from 61% to 40% of graded time on the full match, but on external games it still slightly over-predicts D (37% vs 31%).
 - **Dead ball means "ball not tracked" (found in an external review).** On the full match, 96% of the frames we label D have no ball and only 3% of ball-visible frames are labelled D. The match's ball gaps are long (median 11 s, all missing time in gaps over 5 s) and players are slow during them, so they mostly are stoppages. But a diagnostic on the public 5 minutes (no tuning) shows that two-thirds of true dead-ball time there has the ball visible (restarts being set up), and v2/v4/v4.1 call most of it live. That explains the lower macroF1 on that window. Fixing it needs training data with a tracked ball during stoppages (IDSSE); we could not re-download it in time.
-- **How big the gain really is.** A paired block bootstrap over the 3 Metrica games gives +0.035 spellF1 for v4 over v2 (95% interval +0.017 to +0.054), below our own +0.04 gate. The decoder settings for each held-out game were chosen on the other games' held-out outputs, but those came from models that had seen the held-out game, which is a mild leak.
+- **How big the gain really is.** A paired block bootstrap by the external reviewer over the 3 Metrica games gives +0.035 spellF1 for v4 over v2 (95% interval +0.017 to +0.054), below our own +0.04 gate. The decoder settings for each held-out game were chosen on the other games' held-out outputs, but those came from models that had seen the held-out game, which is a mild leak.
 - **Label rule on the Metrica sample games:** off-target shots, offsides and handballs are not treated as stoppages, so some dead time is labelled live.
 - **Robustness:** with extra random ball loss on the held-out games, v4.1 drops from 0.568 to 0.487 (v4: 0.574 to 0.467). v4.1 was chosen for this.
 - **Decoder settings sit at the edge of the tried range** and differ between folds, so they are not fully pinned down.
 - **Little training variety:** 9 matches for the base models, 3 for the second stage, 9 for the sequence model. A larger sequence model needs more labelled games.
 - **With more time:** tune the decoder's switch costs on external data, add more external matches, and try Smart Tagging and the video as extra inputs.
+
+### Use of the public 5-minute window
+
+Scored once per version as a pipeline check, after the decision was made on external data: v1, v2, v4, v4.1 and v5 (five checks). Plus one diagnostic (how often true dead ball has the ball visible; confusion tables), run after an external review. No setting was tuned on it, and no version was chosen because of it: v4.1 was shipped although it scored lower there than v4 (0.529 vs 0.547), and v5 was rejected on label-free checks of the full match. The diagnostic inspired one experiment (dead-ball-with-visible-ball features, `pipeline/stack6.py`); it was judged on external data only and rejected.
+
+Possessions found by length, v4.1 on held-out games (`results/possession_lengths_v41.txt`): under 1 s 0%, 1–3 s 18%, 3–8 s 52%, over 8 s 76%.
 
 ## 6. Reproduction
 

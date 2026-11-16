@@ -15,7 +15,7 @@ pip install -r requirements.txt          # pinned: numpy 2.2.6, scikit-learn 1.7
 
 `reproduce.sh` runs `pipeline/predict.py` with the committed model and checks the output against the
 SHA-256 of the submitted file in `expected/SHA256SUMS`. It prints `IDENTICAL` on success.
-Tested with Python 3.10. Runtime is a few seconds.
+Verified IDENTICAL from a clean clone on Python 3.10 (Linux arm64) and Python 3.13 (Linux x86_64). Runtime is a few seconds.
 
 ## Layout
 
