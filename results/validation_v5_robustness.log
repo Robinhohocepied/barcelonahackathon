@@ -1,0 +1,9 @@
+v4_submitted MEAN native 0.574 stress 0.467 | worst game-variant 0.418
+stack_v2_only MEAN native 0.531 stress 0.353 | worst game-variant 0.305
+stack_v5_only MEAN native 0.488 stress 0.455 | worst game-variant 0.408
+v5_tcn_only MEAN native 0.481 stress 0.447 | worst game-variant 0.417
+v5_tcn+posstack MEAN native 0.475 stress 0.444 | worst game-variant 0.408
+v5_tcn+v2stack MEAN native 0.510 stress 0.475 | worst game-variant 0.450
+v4tcn+posstack MEAN native 0.568 stress 0.487 | worst game-variant 0.451
+v5n_tcn+posstack MEAN native 0.518 stress 0.473 | worst game-variant 0.440
+v5n_tcn+v2stack MEAN native 0.540 stress 0.476 | worst game-variant 0.435

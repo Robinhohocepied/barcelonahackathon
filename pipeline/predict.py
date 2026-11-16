@@ -9,7 +9,7 @@ import core
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--atd-raw", required=True); ap.add_argument("--atd-meta", required=True); ap.add_argument("--out", required=True)
-    ap.add_argument("--model", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "model_v4.pkl"))
+    ap.add_argument("--model", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "model_v41.pkl"))
     ap.add_argument("--halves", default=None, help="graded video-frame ranges 'a:b,c:d' (inclusive); default = BAR-ATH from DATA.md")
     ap.add_argument("--n-frames", type=int, default=None, help="rows to write; default 199319 for BAR-ATH, else the last frame in the file")
     a = ap.parse_args()
@@ -28,7 +28,11 @@ if __name__ == "__main__":
             import stack, frames, tcn
             st = np.broadcast_to(team, (len(p), len(team)))
             ph = m["team"].predict_proba(X[:, core.TEAM_COLS])[:, 1]; pd = m["dead"].predict_proba(X[:, core.DEAD_COLS])[:, 1]
-            qh, qd = stack.apply(m["stack"], X, ph, pd, stack.evidence(b[_]))
+            if "stack5" in m:                              # v4.1: positive-only second stage (stack5.py)
+                import stack5
+                qh, qd = stack5.apply(m["stack5"], X, ph, pd, stack.evidence(b[_]))
+            else:
+                qh, qd = stack.apply(m["stack"], X, ph, pd, stack.evidence(b[_]))
             Pv = np.column_stack([(1 - qd) * qh, (1 - qd) * (1 - qh), qd])
             Pf = tcn.np_forward(m["tcn"], frames.frame_inputs(p, b, st, ph, pd))
             T5 = -(-len(Pf) // 5); Pt = np.vstack([Pf, np.repeat(Pf[-1:], T5 * 5 - len(Pf), 0)]).reshape(T5, 5, 3).mean(1)
