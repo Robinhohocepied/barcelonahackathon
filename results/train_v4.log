@@ -1,0 +1,12 @@
+ep 0 loss 0.5087  12s
+ep 12 loss 0.3070  157s
+ep 24 loss 0.2842  301s
+held-out game 1 frame accuracy 0.814
+ep 0 loss 0.4983  10s
+ep 12 loss 0.3032  140s
+ep 24 loss 0.2719  281s
+held-out game 2 frame accuracy 0.797
+ep 0 loss 0.5533  11s
+ep 12 loss 0.3188  140s
+ep 24 loss 0.2944  278s
+held-out game 3 frame accuracy 0.834

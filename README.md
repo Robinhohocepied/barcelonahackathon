@@ -23,7 +23,10 @@ Tested with Python 3.10. Runtime is a few seconds.
 |---|---|
 | `pipeline/predict.py` | the submission command: ATD in, `frame,label` CSV out |
 | `pipeline/core.py` | ATD reader, features, 3-state Viterbi decoder |
-| `pipeline/model_v2.pkl` | the models used for the submission (v1 models + v2 second stage + decoder settings) |
+| `pipeline/model_v4.pkl` | the models used for the submission: v1 models, v2 second stage, the v4 sequence model (TCN weights) and decoder settings |
+| `pipeline/tcn.py`, `pipeline/frames.py`, `pipeline/control.py` | v4 sequence model (numpy inference), its per-frame inputs, ball-control signal |
+| `ext_prep4.py`, `train_v4.py`, `ext_v4eval.py`, `ext_v4ens.py`, `fetch_skillcorner.sh` | v4 data prep, training (torch) and validation (`results/validation_v4.md`) |
+| `pipeline/model_v2.pkl` | previous version (v2), kept for comparison |
 | `pipeline/stack.py` | v2 second stage: ball-in-play evidence + recalibration |
 | `metrica_open.py`, `fetch_metrica.sh` | Metrica open sample games: loader and labels from events |
 | `ext_eval.py`, `ext_v2.py`, `ext_v3.py`, `train_v2.py` | external validation and fitting of v2 (results in `results/`) |
