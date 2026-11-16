@@ -1,0 +1,8 @@
+noEM game 1 spellF1 0.490 macroF1 0.804 poss 222 D 37%  {'Ls': (12, 12, 5), 'lam_ha': 2.0, 'lam_d': 1.0}
+noEM game 2 spellF1 0.536 macroF1 0.811 poss 230 D 39%  {'Ls': (16, 16, 5), 'lam_ha': 0.0, 'lam_d': 1.0}
+noEM game 3 spellF1 0.559 macroF1 0.826 poss 262 D 30%  {'Ls': (16, 16, 5), 'lam_ha': 0.0, 'lam_d': 1.0}
+noEM LOGO mean 0.528
+EM game 1 spellF1 0.490 macroF1 0.806 poss 220 D 37% pi_hat 0.31 true 0.35 {'Ls': (12, 12, 5), 'lam_ha': 2.0, 'lam_d': 1.0}
+EM game 2 spellF1 0.544 macroF1 0.807 poss 221 D 40% pi_hat 0.37 true 0.31 {'Ls': (16, 16, 10), 'lam_ha': 0.0, 'lam_d': 1.0}
+EM game 3 spellF1 0.530 macroF1 0.812 poss 285 D 28% pi_hat 0.22 true 0.26 {'Ls': (12, 12, 5), 'lam_ha': 0.0, 'lam_d': 0.3}
+EM LOGO mean 0.522

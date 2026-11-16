@@ -1,0 +1,9 @@
+start 48 configs
+v1 held-out game 1 spellF1 0.404 macroF1 0.748 poss 273 D 44% | cfg {'Ls': (8, 8, 10), 'lam_ha': 0.0, 'lam_d': 3.0}
+v1 held-out game 2 spellF1 0.469 macroF1 0.748 poss 239 D 42% | cfg {'Ls': (8, 8, 30), 'lam_ha': 0.5, 'lam_d': 3.0}
+v1 held-out game 3 spellF1 0.478 macroF1 0.769 poss 246 D 34% | cfg {'Ls': (8, 8, 30), 'lam_ha': 0.5, 'lam_d': 3.0}
+v1 LOGO mean spellF1 0.450
+stack held-out game 1 spellF1 0.485 macroF1 0.804 poss 224 D 37% | cfg {'Ls': (8, 8, 10), 'lam_ha': 2.0, 'lam_d': 1.0}
+stack held-out game 2 spellF1 0.535 macroF1 0.813 poss 235 D 39% | cfg {'Ls': (8, 8, 10), 'lam_ha': 0.5, 'lam_d': 1.0}
+stack held-out game 3 spellF1 0.537 macroF1 0.826 poss 302 D 30% | cfg {'Ls': (8, 8, 10), 'lam_ha': 0.0, 'lam_d': 1.0}
+stack LOGO mean spellF1 0.519

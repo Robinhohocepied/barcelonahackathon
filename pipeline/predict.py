@@ -9,7 +9,7 @@ import core
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--atd-raw", required=True); ap.add_argument("--atd-meta", required=True); ap.add_argument("--out", required=True)
-    ap.add_argument("--model", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "model.pkl"))
+    ap.add_argument("--model", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "model_v2.pkl"))
     ap.add_argument("--halves", default=None, help="graded video-frame ranges 'a:b,c:d' (inclusive); default = BAR-ATH from DATA.md")
     ap.add_argument("--n-frames", type=int, default=None, help="rows to write; default 199319 for BAR-ATH, else the last frame in the file")
     a = ap.parse_args()
@@ -23,7 +23,17 @@ if __name__ == "__main__":
         hi = min(hi, len(pos) - 1)
         p, b = pos[lo:hi + 1], ball[lo:hi + 1]
         X, _ = core.features(p, b, np.broadcast_to(team, (len(p), len(team))))
-        codes = core.decode(X, len(p), m["team"], m["dead"])
+        _ = np.arange(0, len(p), core.STRIDE)
+        if "stack" in m:                                   # v2: ball-in-play evidence + recalibration (stack.py)
+            import stack
+            ph = m["team"].predict_proba(X[:, core.TEAM_COLS])[:, 1]; pd = m["dead"].predict_proba(X[:, core.DEAD_COLS])[:, 1]
+            qh, qd = stack.apply(m["stack"], X, ph, pd, stack.evidence(b[_]))
+            qh, qd = np.clip(qh, 1e-3, 1 - 1e-3), np.clip(qd, 1e-3, 1 - 1e-3)
+            c = m["decode"]
+            s = core.viterbi(np.log(np.column_stack([(1 - qd) * qh, (1 - qd) * (1 - qh), qd])), c["Ls"], c["lam_ha"], c["lam_d"])
+            codes = s[np.minimum(np.arange(len(p)) // core.STRIDE, len(s) - 1)]
+        else:
+            codes = core.decode(X, len(p), m["team"], m["dead"])
         out[lo:hi + 1] = np.array(["H", "A", "D"])[codes]
         print("half %d:%d  H %d  A %d  D %d" % (lo, hi, *(int((codes == c).sum()) for c in (0, 1, 2))), flush=True)
     os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)
