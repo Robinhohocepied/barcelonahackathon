@@ -66,7 +66,7 @@ The labels follow the sources, which match CHALLENGE.md:
 | v2, public 5 minutes, pipeline check | 0.529 | 0.715 |
 | **v4 (submitted), leave-one-game-out on the 3 Metrica games, settings chosen on the other held-out games** | **0.574** | **0.82** |
 | v4, public 5 minutes, pipeline check | 0.547 | 0.706 |
-| **v4.1 (submitted), leave-one-game-out, normal / extra ball loss / worst game** | **0.568 / 0.487 / 0.451** | 0.82 |
+| **v4.1 (submitted), leave-one-game-out, normal / extra ball loss / worst game** | **0.568 / 0.487 / 0.451** | |
 | v4, same robustness test (for comparison) | 0.574 / 0.467 / 0.418 | |
 | v4.1, public 5 minutes, pipeline check (decision made on external games; one possession ≈ 0.06 here) | 0.529 | 0.691 |
 
